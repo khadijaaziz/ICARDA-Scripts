@@ -10,7 +10,7 @@ sdm_model<- raster("./durum_sdm_all.tif")
 trait_rast <- raster("./ST.S.Raster.tif")
 
 #load data
-load("./data.Rdata")
+load(".")
 
 # Define the threshold
 lower <- mean(ST.S.output$Prediction) + sd(ST.S.output$Prediction)
