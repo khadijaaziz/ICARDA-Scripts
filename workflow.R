@@ -1,6 +1,5 @@
 
-workflow <- function(trait_path , sdm_path , gap_path
-){
+workflow <- function(trait_path , sdm_path , gap_path){
     
     ### Install and load required packages ###
     suppressMessages(if(!require(raster)){install.packages('raster'); library(raster)} else {library(raster)})
