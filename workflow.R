@@ -1,20 +1,3 @@
-#' @title Intersection of trait raster with SDM and gap rasters
-#' @description Return a plot of the intersection.
-#' @param trait_path expression. The path to the trait raster.
-#' @param sdm_path expression. The path to the SDMraster.
-#' @param gap_path expression. The path to the Gap raster.
-#' @return A list that contains a plot of the intersection.
-#' @details \code{workflow} 
-#' 
-#' 
-#' 
-#' @author Zakaria Kehel, Khadija Aziz
-#' @examples
-#' \dontrun{
-#' p <- workflow(trait_path = "./CoveredRaster.tif",sdm_path = "./sdm_six-rowed.tif",gap_path = "./gap_class_six-rowed.tif")
-#' }
-#' @rdname workflow
-
 
 workflow <- function(trait_path , sdm_path , gap_path
 ){
