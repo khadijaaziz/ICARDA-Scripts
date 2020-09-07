@@ -49,7 +49,6 @@ high_conf_percent <-  (total_hg_conf/total_sdm_area)*100
 
 g <- gc(); rm(g)
 
-
 #Calculate the Low Confidence coverage 
 low_conf <- trait_rast
 low_conf[which(low_conf[] >= lower)] <- 1
