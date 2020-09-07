@@ -15,41 +15,39 @@ workflow <- function(trait_path , sdm_path , gap_path){
     
     gap <- raster(gap_path)
     
-    cat("Transform the trait raster to plygons...", "\n")
-    r1 <- trait > -Inf
-    traiShp <- rasterToPolygons(r1, fun=NULL,n=4, na.rm=TRUE, digits=12, dissolve=TRUE)
-    proj4string(traiShp) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
     
     cat("Transform the SDM raster to plygons...", "\n")
     r2 <- sdm > -Inf
-    sdmShp <- rasterToPolygons(r2, fun=NULL, n=4, na.rm=TRUE, digits=12, dissolve=TRUE)
-    proj4string(sdmShp) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+    rclass <- rasterToPolygons(r2, fun = function(x){x < 150}, na.rm=TRUE)
+    rclass <- as(rclass, "sf")
+    rclass <- sf::st_union(rclass)
+    rclass <- as(rclass, "Spatial")
+    sdmShp <- rclass
+    
+    g <- gc(); rm(g)
+    
+    #Remove first level of the Gap and keep other levels
+    #gap[which(gap[] != 0)] <- 1
+    gap[which(gap[] == 0)] <- NA
     
     cat("Transform the Gap raster to plygons...", "\n")
     r3 <- gap > -Inf
-    gapShp <- rasterToPolygons(r3, fun=NULL, n=4, na.rm=TRUE, digits=12, dissolve=TRUE)
-    proj4string(gapShp) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+    rclass <- raster::rasterToPolygons(r3, fun = function(x){x < 150}, na.rm=TRUE)
+    rclass <- as(rclass, "sf")
+    rclass <- sf::st_union(rclass)
+    rclass <- as(rclass, "Spatial")
+    gapShp <- rclass
+    
+    g <- gc(); rm(g)
     
     ### Selecting the intersections ###
     cat("Intersection...", "\n")
-    hotspot0 <- gIntersection(traiShp, sdmShp, byid=TRUE,drop_lower_td=F)
-    Finalintersection <- gIntersection(hotspot0,gapShp, byid=TRUE,drop_lower_td=F)
+    hotspot <- intersect(trait, sdmShp)
+    Finalintersection <- intersect(hotspot, gapShp)
     
-    ### crop and mask ###
-    crp <- crop(trait, extent(Finalintersection))
-    msk <- mask(crp, Finalintersection)
+    g <- gc(); rm(g)
     
-    ### Plot the final result ###
-    worldmap <- getMap(resolution = "coarse")
-    plot(worldmap, col = "lightgrey",
-                fill = T, border = "darkgray",
-                xlim = c(-180, 180), ylim = c(-90, 90),
-                bg = "aliceblue",main = "World Map",
-                asp = 1, wrap=c(-180,180),lwd=0.5,xlab="Longitude",ylab="Latitude")
+    #writeRaster(Finalintersection, filename='.Raster.tif', overwrite=TRUE)
+    return(Finalintersection)
     
-    plot(msk,add=TRUE,zoom=3)
-    p <- recordPlot()
-    
-
-    return (list(`p`=p))
 }
