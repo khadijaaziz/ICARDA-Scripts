@@ -10,7 +10,7 @@ sdm_model<- raster("./durum_sdm_all.tif")
 trait_rast <- raster("./ST.S.Raster.tif")
 
 # Load RData
-load("C:/Users/yasse_000/Desktop/Coverage/RData/ScubOutput.RData")
+load(".")
 data <- '' #put the loaded data in this value
 # Define the threshold
 xmin <- extent(sdm_model)[1]
